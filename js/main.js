@@ -157,5 +157,45 @@ document.addEventListener("DOMContentLoaded", () => {
     firstObj.include();
     secondObj.include();
     thirdObj.include();
+    // server first
+    const forms = document.querySelectorAll("form"),
+          requestMessage = {
+              "loading": "Loading",
+              "sucesses": "All is sucesses",
+              "eror": "An error has occurred"
+            };
+    forms.forEach(item => {
+      postForm(item)
+    })
+    function postForm(form) {
+      form.addEventListener("submit", (e) => {
+        const requestStatus = document.createElement('div');
+        requestStatus.textContent = requestMessage.loading;
+        form.append(requestStatus);
+        e.preventDefault();
+        const request = new XMLHttpRequest();
+        request.open("POST", "server.php");
+        request.setRequestHeader("Content-type","aplication/json")
+
+        const formData = new FormData(form),
+              objectForJson = {};
+
+        formData.forEach((value,key) => {
+          objectForJson[key] = value;
+        })
+        const objectJson = JSON.stringify(objectForJson);
+        console.log(objectJson);
+        request.send(objectJson);
+        request.addEventListener("load",() => {
+          if(request.status === 200) {
+            console.log(request.response);
+            requestStatus.textContent = requestMessage.sucesses;
+            form.reset()
+          }else{
+            requestStatus.textContent = requestMessage.eror;
+          }
+        })
+      })
+    }
 })
 
