@@ -176,6 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     function postForm(form) {
       form.addEventListener("submit", (e) => {
+        e.preventDefault();
         const requestStatus = document.createElement('img');        
         requestStatus.setAttribute("data-loading","");
         requestStatus.src = requestMessage.loading;
@@ -184,30 +185,26 @@ document.addEventListener("DOMContentLoaded", () => {
         margin: 0% auto;
         `
         form.insertAdjacentElement ('afterend',requestStatus);
-        e.preventDefault();
-        const request = new XMLHttpRequest();
-        request.open("POST", "server.php");
-        request.setRequestHeader("Content-type","aplication/json")
-
-        const formData = new FormData(form),
-              objectForJson = {};
-
+        const objectForJson = {};
+        formData = new FormData(form);
         formData.forEach((value,key) => {
           objectForJson[key] = value;
         })
-        const objectJson = JSON.stringify(objectForJson);
-        console.log(objectJson);
-        request.send(objectJson);
-        request.addEventListener("load",() => {
-          if(request.status === 200) {
-            console.log(request.response);
-            requestStatus.remove();
-            showModalThanks(requestMessage.sucesses);
-            form.reset()
-          }else{
-            requestStatus.remove();
-            showModalThanks(requestMessage.eror);
-          }
+        fetch("server.php", {
+          method: "POST",
+          headers: {
+            "Content-type": "aplication/json",
+          },
+          body: JSON.stringify(objectForJson),
+        }).then((data)=>{
+          console.log(data);
+          console.log(data.status);
+          requestStatus.remove();
+          showModalThanks(requestMessage.sucesses);
+          form.reset() 
+        }).catch(() => {
+          requestStatus.remove();
+          showModalThanks(requestMessage.eror);
         })
       })
     }
