@@ -76,8 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
     startTimer = setInterval(onTimer,1000);
     // modal Window
     const btn = document.querySelectorAll("[data-modal]"),
-          modal = document.querySelector("[data-modal-open]"),
-          closeBtn = document.querySelector("[date-close]");
+          modal = document.querySelector("[data-modal-open]");
     
     let timer;
 
@@ -85,18 +84,25 @@ document.addEventListener("DOMContentLoaded", () => {
       modal.classList.add("show");
       modal.classList.remove("hire");
       document.documentElement.style.overflow = "hidden";
-      clearTimeout(timer)
-      
+      clearTimeout(timer);
     }
     function closeModal() {
+      const loadingEl = document.querySelector("form").querySelector("[data-loading]");
+      if(document.querySelector("form").querySelector("[data-loading]")) {
+        document.querySelector("form").querySelector("[data-loading]").remove();
+      }
       modal.classList.add("hire");
       modal.classList.remove("show");
       document.documentElement.style.overflow = "";
+      if(Boolean(document.querySelector("[data-messeage-dialog]"))){
+        document.querySelector("[data-messeage-dialog]").remove();
+      };if(document.querySelector(".modal__dialog").classList.contains('hire')){
+        document.querySelector(".modal__dialog").classList.remove("hire");
+      }
     }
     btn.forEach(item => {
       item.addEventListener("click",openModal);
     })
-    closeBtn.addEventListener("click",closeModal);
     
     timer = setTimeout(openModal,2000)
     let scroleOpen = 1;
@@ -107,7 +113,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     })
     modal.addEventListener("click",function(event) {
-      if(event.target && event.target.classList.contains("show")) {
+      if(event.target && event.target.classList.contains("show") || event.target.getAttribute("date-close") == "") 
+      {
         closeModal();
       }
     })
@@ -160,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // server first
     const forms = document.querySelectorAll("form"),
           requestMessage = {
-              "loading": "Loading",
+              "loading": "/img/svg/5.2 spinner.svg",
               "sucesses": "All is sucesses",
               "eror": "An error has occurred"
             };
@@ -169,9 +176,14 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     function postForm(form) {
       form.addEventListener("submit", (e) => {
-        const requestStatus = document.createElement('div');
-        requestStatus.textContent = requestMessage.loading;
-        form.append(requestStatus);
+        const requestStatus = document.createElement('img');        
+        requestStatus.setAttribute("data-loading","");
+        requestStatus.src = requestMessage.loading;
+        requestStatus.style.cssText = `
+        display: block;
+        margin: 0% auto;
+        `
+        form.insertAdjacentElement ('afterend',requestStatus);
         e.preventDefault();
         const request = new XMLHttpRequest();
         request.open("POST", "server.php");
@@ -189,13 +201,36 @@ document.addEventListener("DOMContentLoaded", () => {
         request.addEventListener("load",() => {
           if(request.status === 200) {
             console.log(request.response);
-            requestStatus.textContent = requestMessage.sucesses;
+            requestStatus.remove();
+            showModalThanks(requestMessage.sucesses);
             form.reset()
           }else{
-            requestStatus.textContent = requestMessage.eror;
+            requestStatus.remove();
+            showModalThanks(requestMessage.eror);
           }
         })
       })
+    }
+    function showModalThanks(massege) {
+      const modal = document.querySelector(".modal__dialog"),
+            modalIn = document.querySelector("[data-modal-open]");
+      const newModal = document.createElement("div");
+      modal.classList.add("hire");
+      newModal.innerHTML = `
+      <div class="modal__dialog" data-messeage-dialog>
+      <div class="modal__content">
+      <div date-close class="modal__close">×</div>
+      <div>${massege}</div>
+      <div>
+      `;
+      newModal.style.textAlign = "center";
+      modalIn.append(newModal);
+      openModal();
+      setTimeout(()=>{newModal.remove(); 
+      closeModal();
+      modal.classList.remove("hire");
+      }, 5000);
+
     }
 })
 
