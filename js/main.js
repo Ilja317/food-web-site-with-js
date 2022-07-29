@@ -158,12 +158,15 @@ document.addEventListener("DOMContentLoaded", () => {
             this.element = element;
       }
     }
-    const firstObj = new NewSubject("img/tabs/vegy.jpg","vegy",'Меню "Фитнес"','Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',7,".menu__field .container",)
-    const secondObj = new NewSubject("img/tabs/elite.jpg","elite",'Меню “Премиум”','В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',7,".menu__field .container",)
-    const thirdObj = new NewSubject("img/tabs/post.jpg","post",'Меню "Постное"','Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',8,".menu__field .container",)
-    firstObj.include();
-    secondObj.include();
-    thirdObj.include();
+      fetch("http://localhost:3000/menu")
+      .then(data=> data.json())
+      .then(arr => {
+        console.log(arr);
+        arr.forEach(({img,alt,title,descr,price}) => {
+          const obj = new NewSubject(img,alt,title,descr,price,".menu__field .container");
+          obj.include();
+        })
+      })
     // server first
     const forms = document.querySelectorAll("form"),
           requestMessage = {
@@ -174,6 +177,19 @@ document.addEventListener("DOMContentLoaded", () => {
     forms.forEach(item => {
       postForm(item)
     })
+  const  createPost = async (src,data)=> {
+  const res = await fetch(src, {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: data,
+        })
+        if(!res.ok){
+          throw new Error("Dont could creat new post " + url + " because " + res.status)
+        }
+        return await res;
+    }
     function postForm(form) {
       form.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -190,15 +206,11 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.forEach((value,key) => {
           objectForJson[key] = value;
         })
-        fetch("server.php", {
-          method: "POST",
-          headers: {
-            "Content-type": "aplication/json",
-          },
-          body: JSON.stringify(objectForJson),
-        }).then((data)=>{
-          console.log(data);
+        createPost("http://localhost:3000/requests",JSON.stringify(objectForJson)).then(data=>
+        data.json())
+        .then((data)=>{
           console.log(data.status);
+          console.log(data);
           requestStatus.remove();
           showModalThanks(requestMessage.sucesses);
           form.reset() 
