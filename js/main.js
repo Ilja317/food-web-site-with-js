@@ -241,70 +241,113 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 5000);
     }
     // sliders
-    function mySliders(parentSelector,currenById,fullLengthSlidersById) {
-      const sliders = document.querySelectorAll(`${parentSelector} .offer__slide`);
-      sliders.forEach(element => {
-        element.classList.remove("show");
-        element.classList.add("hire");
-    }
-      )
-      sliders[0].classList.remove("hire");
-      sliders[0].classList.add("show");
-      const current = document.getElementById(currenById);
-      const fullLength = document.getElementById(fullLengthSlidersById);
-      fullLength.textContent = sliders.length;
-      current.textContent = 1;
-    }
-    mySliders(".offer__slider-wrapper","current","total");
-    function previosSliderFunct (parentSelector,currenById,fullLengthSlidersById) {
-      const sliders = document.querySelectorAll(`${parentSelector} .offer__slide`);
-      const current = document.getElementById(currenById);
-      const nowNomber = +current.textContent;
-      const fullLength = document.getElementById(fullLengthSlidersById);
-      
-      let index = (nowNomber - 1) - 1;
-      current.textContent = index + 1;
-      if( index < 0 ) {
-        index = sliders.length -1;
-        current.textContent = sliders.length;
-      };
-      sliders.forEach(element => {
-        element.classList.remove("show")
-        element.classList.add("hire")
-    })
-      sliders[index].classList.remove("hire");
-      sliders[index].classList.add("show");
-      
-      fullLength.textContent = sliders.length;
-      
-    }
-    function nextSliderFunct (parentSelector,currenById,fullLengthSlidersById) {
-      const sliders = document.querySelectorAll(`${parentSelector} .offer__slide`);
-      const current = document.getElementById(currenById);
-      const nowNomber = +current.textContent;
-      const fullLength = document.getElementById(fullLengthSlidersById);
-      let index = (nowNomber - 1) + 1;
-      current.textContent = index + 1;
-      if( index + 1 > sliders.length) {
-        index = 0;
-        current.textContent = index + 1;
-      }
-      sliders.forEach(element => {
-        element.classList.add("hire")
-        element.classList.remove("show")
-      })
-      sliders[index].classList.remove("hire")
-      sliders[index].classList.add("show"); 
-      fullLength.textContent = sliders.length;
-      
-    }
-    const previosSlider = document.querySelector(".offer__slider-prev");
-    const nextSlider = document.querySelector(".offer__slider-next")
-    previosSlider.addEventListener("click", () => {
-      previosSliderFunct(".offer__slider-wrapper","current","total");
-    })
-    nextSlider.addEventListener("click", () => {
-      nextSliderFunct(".offer__slider-wrapper","current","total");
-    })
+    // function newSliders(parentSelector,currenById,fullLengthSlidersById,number = "1") {
+    //   const sliders = document.querySelectorAll(`${parentSelector} .offer__slide`);
+    //   const current = document.getElementById(currenById);
+    //   const fullLength = document.getElementById(fullLengthSlidersById);
+    //   let index = number;
+    //   if(index < 10) {
+    //     current.textContent = "0" + index;
+    //   }else {
+    //     current.textContent =  index;
+    //   }
+    //   if( index < 1) {
+    //     index = sliders.length;
+    //     if(sliders.length < 10) {
+    //       current.textContent = "0" + index;
+    //     }else {
+    //       current.textContent =  index;
+    //     }
+    //   };
+    //   if( index > sliders.length) {
+    //     index = 1;
+    //     if(index + 1 < 10) {
+    //       current.textContent = "0" + index;
+    //     }else {
+    //       current.textContent =  index;
+    //     }
+    //   };
+    //   sliders.forEach(element => {
+    //     element.classList.add("hire")
+    //     element.classList.remove("show")
+    //   })
+    //   sliders[index - 1].classList.remove("hire")
+    //   sliders[index - 1].classList.add("show"); 
+    //   if(sliders.length < 10) {
+    //     fullLength.textContent = "0" + sliders.length;
+    //   }else{fullLength.textContent =sliders.length;}
+    // }
+    // newSliders(".offer__slider-wrapper","current","total");
+    // function plusIndex(parentSelector,currenById,fullLengthSlidersById,) {
+    //   let number = document.getElementById(currenById).textContent;
+    //   number = Number(number);
+    //   number = ++number;
+    //   newSliders(parentSelector,currenById,fullLengthSlidersById,number)
+    // }
+    // function minusIndex(parentSelector,currenById,fullLengthSlidersById,) {
+    //   let number = document.getElementById(currenById).textContent;
+    //   number = Number(number);
+    //   number = --number;
+    //   newSliders(parentSelector,currenById,fullLengthSlidersById,number)
+    // }
+    // const previosSlider = document.querySelector(".offer__slider-prev");
+    // const nextSlider = document.querySelector(".offer__slider-next")
+    // previosSlider.addEventListener("click", () => {
+    //   minusIndex(".offer__slider-wrapper","current","total");
+    // })
+    // nextSlider.addEventListener("click", () => {
+    //   plusIndex(".offer__slider-wrapper","current","total");
+    // })
+    const wrapper = document.querySelector(".offer__slider-wrapper"),
+          slids = document.querySelectorAll(".offer__slide"),
+          previosSlid = document.querySelector(".offer__slider-prev"),
+          nextSlid = document.querySelector(".offer__slider-next"),
+          sliderFullWidth = document.querySelector(".offer__slider-iner");
+          sliderWidth = window.getComputedStyle(wrapper).width;
+          sliderFullWidth.style.width = Math.round(+sliderWidth.slice(0,sliderWidth.length - 2) * (slids.length)) + "px";
+          wrapper.style.overflow = "hidden";
+          sliderFullWidth.style.display = "flex";
+          sliderFullWidth.style.transition = "0.5s all";
+          let nowSlide = document.querySelector("#current");
+          const lengthSlider = document.querySelector("#total");
+          if (slids.length < 10) {
+            lengthSlider.innerHTML = "0" + slids.length;
+          }else{lengthSlider.innerHTML = slids.length;}
+          let indexSlider = 1;
+          let offsetSlider = 0;
+          function currentSlider(index) {
+            if(index < 10) {
+              nowSlide.textContent = "0" + index;
+            }else {
+              nowSlide.textContent =  index;
+            }
+          }
+          currentSlider(indexSlider);
+          previosSlid.addEventListener("click", ()=>{
+            if(offsetSlider == 0) {
+              offsetSlider = Math.round(+(sliderFullWidth.style.width.slice(0, sliderFullWidth.style.width.length - 2)) - (+sliderWidth.slice(0, sliderWidth.length - 2)));
+            }else{
+              offsetSlider -= Math.round(+sliderWidth.slice(0,sliderWidth.length - 2));
+            }
+            indexSlider--;
+            if(indexSlider < 1){
+              indexSlider = slids.length;
+            }
+            currentSlider(indexSlider)
+            sliderFullWidth.style.transform = `translateX(${-offsetSlider}px)`
+          })
+          nextSlid.addEventListener("click", ()=>{
+            if(offsetSlider == Math.round(+(sliderFullWidth.style.width.slice(0, sliderFullWidth.style.width.length - 2)) - (+sliderWidth.slice(0, sliderWidth.length - 2)))) {
+              offsetSlider = 0;
+            }else{
+              offsetSlider += Math.round(+sliderWidth.slice(0,sliderWidth.length - 2));
+            }
+            indexSlider++;
+            if(indexSlider > slids.length) {
+              indexSlider = 1;
+            }else {indexSlider}
+            currentSlider(indexSlider);
+            sliderFullWidth.style.transform = `translateX(${-offsetSlider}px)`
+          })
 })
 
