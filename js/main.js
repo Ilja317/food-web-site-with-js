@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
       item.addEventListener("click",openModal);
     })
     
-    timer = setTimeout(openModal,2000)
+    timer = setTimeout(openModal,30000)
     let scroleOpen = 1;
     window.addEventListener("scroll",()=> {
       if(Math.round(window.pageYOffset + document.documentElement.clientHeight) === document.documentElement.scrollHeight && scroleOpen == 1) {
@@ -239,7 +239,72 @@ document.addEventListener("DOMContentLoaded", () => {
       closeModal();
       modal.classList.remove("hire");
       }, 5000);
-
     }
+    // sliders
+    function mySliders(parentSelector,currenById,fullLengthSlidersById) {
+      const sliders = document.querySelectorAll(`${parentSelector} .offer__slide`);
+      sliders.forEach(element => {
+        element.classList.remove("show");
+        element.classList.add("hire");
+    }
+      )
+      sliders[0].classList.remove("hire");
+      sliders[0].classList.add("show");
+      const current = document.getElementById(currenById);
+      const fullLength = document.getElementById(fullLengthSlidersById);
+      fullLength.textContent = sliders.length;
+      current.textContent = 1;
+    }
+    mySliders(".offer__slider-wrapper","current","total");
+    function previosSliderFunct (parentSelector,currenById,fullLengthSlidersById) {
+      const sliders = document.querySelectorAll(`${parentSelector} .offer__slide`);
+      const current = document.getElementById(currenById);
+      const nowNomber = +current.textContent;
+      const fullLength = document.getElementById(fullLengthSlidersById);
+      
+      let index = (nowNomber - 1) - 1;
+      current.textContent = index + 1;
+      if( index < 0 ) {
+        index = sliders.length -1;
+        current.textContent = sliders.length;
+      };
+      sliders.forEach(element => {
+        element.classList.remove("show")
+        element.classList.add("hire")
+    })
+      sliders[index].classList.remove("hire");
+      sliders[index].classList.add("show");
+      
+      fullLength.textContent = sliders.length;
+      
+    }
+    function nextSliderFunct (parentSelector,currenById,fullLengthSlidersById) {
+      const sliders = document.querySelectorAll(`${parentSelector} .offer__slide`);
+      const current = document.getElementById(currenById);
+      const nowNomber = +current.textContent;
+      const fullLength = document.getElementById(fullLengthSlidersById);
+      let index = (nowNomber - 1) + 1;
+      current.textContent = index + 1;
+      if( index + 1 > sliders.length) {
+        index = 0;
+        current.textContent = index + 1;
+      }
+      sliders.forEach(element => {
+        element.classList.add("hire")
+        element.classList.remove("show")
+      })
+      sliders[index].classList.remove("hire")
+      sliders[index].classList.add("show"); 
+      fullLength.textContent = sliders.length;
+      
+    }
+    const previosSlider = document.querySelector(".offer__slider-prev");
+    const nextSlider = document.querySelector(".offer__slider-next")
+    previosSlider.addEventListener("click", () => {
+      previosSliderFunct(".offer__slider-wrapper","current","total");
+    })
+    nextSlider.addEventListener("click", () => {
+      nextSliderFunct(".offer__slider-wrapper","current","total");
+    })
 })
 
