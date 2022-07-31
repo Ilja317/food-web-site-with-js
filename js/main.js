@@ -309,12 +309,12 @@ document.addEventListener("DOMContentLoaded", () => {
           wrapper.style.overflow = "hidden";
           sliderFullWidth.style.display = "flex";
           sliderFullWidth.style.transition = "0.5s all";
-          let nowSlide = document.querySelector("#current");
+          const nowSlide = document.querySelector("#current");
           const lengthSlider = document.querySelector("#total");
           // create indicator
           offerSlider.style.position = "relative";
-          offerSlider.classList.add("indicator")
           const dots = document.createElement("ol");
+          dots.classList.add("indicator")
           dots.style.cssText = `
               position: absolute;
               right: 0;
@@ -353,6 +353,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }else{lengthSlider.innerHTML = slids.length;}
           let indexSlider = 1;
           let offsetSlider = 0;
+          // indecator function
           function currentSlider(index) {
             if(index < 10) {
               nowSlide.textContent = "0" + index;
@@ -401,9 +402,9 @@ document.addEventListener("DOMContentLoaded", () => {
           })
           fulDots.forEach(e => {
             e.addEventListener("click",(event)=> {
-              offsetSlider = (Math.round(+(sliderFullWidth.style.width.slice(0, sliderFullWidth.style.width.length - 2)) - (+sliderWidth.slice(0, sliderWidth.length - 2)))) - (Math.round(+(sliderFullWidth.style.width.slice(0, sliderFullWidth.style.width.length - 2)) - (+sliderWidth.slice(0, sliderWidth.length - 2)) * (+event.target.getAttribute("data-indicator"))))
-              sliderFullWidth.style.transform = `translateX(${-offsetSlider}px)`;
               indexSlider = +event.target.getAttribute("data-indicator");
+              offsetSlider = (Math.round(+sliderWidth.slice(0,sliderWidth.length - 2) * (indexSlider - 1)))
+              sliderFullWidth.style.transform = `translateX(${-offsetSlider}px)`;
               currentSlider(indexSlider);
               indicatorSet(indexSlider,fulDots);
             })
