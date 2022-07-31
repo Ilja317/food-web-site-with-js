@@ -301,6 +301,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const wrapper = document.querySelector(".offer__slider-wrapper"),
           slids = document.querySelectorAll(".offer__slide"),
           previosSlid = document.querySelector(".offer__slider-prev"),
+          offerSlider = document.querySelector(".offer__slider")
           nextSlid = document.querySelector(".offer__slider-next"),
           sliderFullWidth = document.querySelector(".offer__slider-iner");
           sliderWidth = window.getComputedStyle(wrapper).width;
@@ -310,6 +311,43 @@ document.addEventListener("DOMContentLoaded", () => {
           sliderFullWidth.style.transition = "0.5s all";
           let nowSlide = document.querySelector("#current");
           const lengthSlider = document.querySelector("#total");
+          // create indicator
+          offerSlider.style.position = "relative";
+          offerSlider.classList.add("indicator")
+          const dots = document.createElement("ol");
+          dots.style.cssText = `
+              position: absolute;
+              right: 0;
+              bottom: 0;
+              left: 0;
+              z-index: 15;
+              display: flex;
+              justify-content: center;
+              margin-right: 15%;
+              margin-left: 15%;
+              list-style: none;
+            `
+            offerSlider.append(dots);
+          for (let i = 0;i <slids.length;i++) {
+            const dot = document.createElement("li");
+            dot.setAttribute("data-indicator",`${i + 1}`);
+            dot.style.cssText = `
+            box-sizing: content-box;
+            flex: 0 1 auto;
+            width: 30px;
+            height: 6px;
+            margin-right: 3px;
+            margin-left: 3px;
+            cursor: pointer;
+            background-color: #fff;
+            background-clip: padding-box;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            opacity: .5;
+            transition: opacity .6s ease;`
+            dots.append(dot);
+          }
+          // end create indicator
           if (slids.length < 10) {
             lengthSlider.innerHTML = "0" + slids.length;
           }else{lengthSlider.innerHTML = slids.length;}
@@ -322,7 +360,17 @@ document.addEventListener("DOMContentLoaded", () => {
               nowSlide.textContent =  index;
             }
           }
+          const fulDots = dots.querySelectorAll('li');
+          indicatorSet(indexSlider,fulDots);
           currentSlider(indexSlider);
+          function indicatorSet(indexSlider,fulDots) {
+            fulDots.forEach((e) => {
+              e.style.opacity = '.5'
+              if (e.getAttribute('data-indicator') == indexSlider) {
+                e.style.opacity = "1";
+              }
+            })
+          };
           previosSlid.addEventListener("click", ()=>{
             if(offsetSlider == 0) {
               offsetSlider = Math.round(+(sliderFullWidth.style.width.slice(0, sliderFullWidth.style.width.length - 2)) - (+sliderWidth.slice(0, sliderWidth.length - 2)));
@@ -335,6 +383,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             currentSlider(indexSlider)
             sliderFullWidth.style.transform = `translateX(${-offsetSlider}px)`
+            indicatorSet(indexSlider,fulDots);
           })
           nextSlid.addEventListener("click", ()=>{
             if(offsetSlider == Math.round(+(sliderFullWidth.style.width.slice(0, sliderFullWidth.style.width.length - 2)) - (+sliderWidth.slice(0, sliderWidth.length - 2)))) {
@@ -348,6 +397,16 @@ document.addEventListener("DOMContentLoaded", () => {
             }else {indexSlider}
             currentSlider(indexSlider);
             sliderFullWidth.style.transform = `translateX(${-offsetSlider}px)`
+            indicatorSet(indexSlider,fulDots);
+          })
+          fulDots.forEach(e => {
+            e.addEventListener("click",(event)=> {
+              offsetSlider = (Math.round(+(sliderFullWidth.style.width.slice(0, sliderFullWidth.style.width.length - 2)) - (+sliderWidth.slice(0, sliderWidth.length - 2)))) - (Math.round(+(sliderFullWidth.style.width.slice(0, sliderFullWidth.style.width.length - 2)) - (+sliderWidth.slice(0, sliderWidth.length - 2)) * (+event.target.getAttribute("data-indicator"))))
+              sliderFullWidth.style.transform = `translateX(${-offsetSlider}px)`;
+              indexSlider = +event.target.getAttribute("data-indicator");
+              currentSlider(indexSlider);
+              indicatorSet(indexSlider,fulDots);
+            })
           })
 })
 
