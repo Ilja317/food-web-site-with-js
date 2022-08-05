@@ -1,10 +1,10 @@
-function slider() {
-    const wrapper = document.querySelector(".offer__slider-wrapper"),
-          slids = document.querySelectorAll(".offer__slide"),
-          previosSlid = document.querySelector(".offer__slider-prev"),
-          offerSlider = document.querySelector(".offer__slider")
-          nextSlid = document.querySelector(".offer__slider-next"),
-          sliderFullWidth = document.querySelector(".offer__slider-iner");
+function slider({sledeS,prev,offerSled,next,offerSliderIn,wrapp}) {
+    const wrapper = document.querySelector(wrapp),
+          slids = document.querySelectorAll(sledeS),
+          previosSlid = document.querySelector(prev),
+          offerSlider = document.querySelector(offerSled),
+          nextSlid = document.querySelector(next),
+          sliderFullWidth = document.querySelector(offerSliderIn),
           sliderWidth = window.getComputedStyle(wrapper).width;
           sliderFullWidth.style.width = Math.round(+sliderWidth.slice(0,sliderWidth.length - 2) * (slids.length)) + "px";
           wrapper.style.overflow = "hidden";
@@ -111,4 +111,4 @@ function slider() {
             })
           });
 }
-module.exports = slider;
+export default slider;

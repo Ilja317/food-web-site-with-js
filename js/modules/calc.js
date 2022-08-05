@@ -83,4 +83,4 @@ function calc() {
       getStaticInfo(".calculating__choose_big","calculating__choose-item_active");
       getDinamicInfo();
 }
-module.exports = calc;
+export default calc;

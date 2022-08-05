@@ -1,5 +1,4 @@
-function timer() {
-  let endTime = "2023-04-01";
+function timer(selector,endTime) {
   function ourTime (time) {
     let getTime = Date.parse(time) - Date.parse(new Date()),
         days = Math.floor(getTime / (1000 * 60 * 60 * 24)),
@@ -36,10 +35,10 @@ function timer() {
         clearInterval(startTimer)
       }
     }
-    returnTimer(endTime,".promotion__timer");
+    returnTimer(endTime,selector);
     function onTimer() {
-      returnTimer(endTime,".promotion__timer");
+      returnTimer(endTime,selector);
     }
-    startTimer = setInterval(onTimer,1000);
+  let startTimer = setInterval(onTimer,1000);
 }
-module.exports = timer;
+export default timer;

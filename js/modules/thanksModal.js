@@ -1,4 +1,4 @@
-function serverPost() {
+function serverPost(openModal,closeModal,timer) {
   const forms = document.querySelectorAll("form"),
           requestMessage = {
               "loading": "/img/svg/5.2 spinner.svg",
@@ -33,7 +33,7 @@ function serverPost() {
         `
         form.insertAdjacentElement ('afterend',requestStatus);
         const objectForJson = {};
-        formData = new FormData(form);
+        let formData = new FormData(form);
         formData.forEach((value,key) => {
           objectForJson[key] = value;
         })
@@ -65,11 +65,11 @@ function serverPost() {
       `;
       newModal.style.textAlign = "center";
       modalIn.append(newModal);
-      openModal();
+      openModal(timer);
       setTimeout(()=>{newModal.remove(); 
       closeModal();
       modal.classList.remove("hire");
       }, 5000);
     }
 }
-module.exports = serverPost;
+export default serverPost;
